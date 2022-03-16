@@ -1,25 +1,42 @@
 #!/usr/bin/env python3
 import random
+from os import system
+
 """This program plays a game of Rock, Paper, Scissors between two Players,
 and reports both Player's scores each round."""
 
-moves = ['rock', 'paper', 'scissors']
 
 """The Player class is the parent class for all of the Players
 in this game"""
 
 
 class Player:
+    moves = ['rock', 'paper', 'scissors']
+
+    def validate_play(self, play):
+        return play.lower() in Player.moves
+
     def move(self):
-        return 'rock'
+        pass
 
     def learn(self, my_move, their_move):
         pass
 
 
+class HumanPlayer(Player):
+
+    def move(self):
+        play = input(f"What will you play (rock, paper, scissors): ")
+        if self.validate_play(play):
+            return play
+        else:
+            print("Please make a valid play....\n")
+            self.move()
+
+
 class RandomPlayer(Player):
     def move(self):
-        return random.choice(moves)
+        return random.choice(Player.moves)
 
 
 def beats(one, two):
@@ -51,12 +68,15 @@ class Game:
             self.p2_score += 1
 
     def round_winner(self, round, result):
+        separator = "=" * 50
+        separator_newline = '\n' + separator + '\n'
+        print(separator)
         if result == 'player1':
-            return f"Player 1 wins round {round}!"
+            return f"Player 1 wins round!{separator_newline}".upper()
         elif result == 'player2':
-            return f"Player 2 wins round {round}!"
+            return f"Player 2 wins round!{separator_newline}".upper()
         else:
-            return "It's a tie!"
+            return "It's a tie!{separator_newline}".upper()
 
     def final_winner(self):
         score1 = self.p1_score
@@ -76,20 +96,23 @@ class Game:
 
         game_result = self.winner(move1, move2)
         self.update_score(game_result)
-        print(self.round_winner(round, game_result), '\n')
+        print(self.round_winner(round, game_result))
         self.p1.learn(move1, move2)
         self.p2.learn(move2, move1)
 
     def play_game(self):
+        system('clear')
         print("Game start!\n")
-        for round in range(20):
+        for round in range(5):
             self.round = round
             print(f"Round {round}:")
+            print('-' * 48)
             self.play_round(round)
+
         print(self.final_winner())
-        print("\nGame over!")
+        print("\nGame over!\n")
 
 
 if __name__ == '__main__':
-    game = Game(RandomPlayer(), RandomPlayer())
+    game = Game(HumanPlayer(), RandomPlayer())
     game.play_game()
