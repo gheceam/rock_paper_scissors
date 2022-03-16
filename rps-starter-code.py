@@ -33,13 +33,39 @@ class Game:
     def __init__(self, p1, p2):
         self.p1 = p1
         self.p2 = p2
+        self.p1_score = 0
+        self.p2_score = 0
+
+    def winner(self, move1, move2):
+        # if both moves are the same its a tie
+        if move1 == move2:
+            return 'tie'
+        if beats(move1, move2):
+            return 'player 1'
+        else:
+            return 'player 2'
+
+    def update_score(self, result):
+        if result == 'player1':
+            self.p1_score += 1
+        elif result == 'player2':
+            self.p2_score += 1
+
+    def declare_winner(self, score1, score2):
+        if score1 > score2:
+            return 'Player 1 is winner!'
+        elif score1 < score2:
+            return 'Player 2 is winner!'
+        elif score1 == score2:
+            return f'It\'s a tie'
 
     def play_round(self):
         move1 = self.p1.move()
         move2 = self.p2.move()
         print(f"Player 1: {move1}  Player 2: {move2}")
-        game_result = beats(move1, move2)
-        print(game_result)
+
+        game_result = self.winner(move1, move2)
+        self.update_score(game_result)
         self.p1.learn(move1, move2)
         self.p2.learn(move2, move1)
 
@@ -48,6 +74,7 @@ class Game:
         for round in range(3):
             print(f"Round {round}:")
             self.play_round()
+        print(self.declare_winner(self.p1_score, self.p2_score))
         print("Game over!")
 
 
