@@ -76,7 +76,7 @@ class Game:
         elif result == 'player2':
             return f"Player 2 wins round!{separator_newline}".upper()
         else:
-            return "It's a tie!{separator_newline}".upper()
+            return f"It's a tie!{separator_newline}".upper()
 
     def final_winner(self):
         score1 = self.p1_score
@@ -101,7 +101,9 @@ class Game:
         self.p2.learn(move2, move1)
 
     def play_game(self):
+
         system('clear')
+
         print("Game start!\n")
         for round in range(5):
             self.round = round
