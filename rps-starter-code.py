@@ -20,7 +20,6 @@ class Player:
 class RandomPlayer(Player):
     def move(self):
         return random.choice(moves)
-        # return super().move()
 
 
 def beats(one, two):
@@ -41,9 +40,9 @@ class Game:
         if move1 == move2:
             return 'tie'
         if beats(move1, move2):
-            return 'player 1'
+            return 'player1'
         else:
-            return 'player 2'
+            return 'player2'
 
     def update_score(self, result):
         if result == 'player1':
@@ -51,31 +50,44 @@ class Game:
         elif result == 'player2':
             self.p2_score += 1
 
-    def declare_winner(self, score1, score2):
+    def round_winner(self, round, result):
+        if result == 'player1':
+            return f"Player 1 wins round {round}!"
+        elif result == 'player2':
+            return f"Player 2 wins round {round}!"
+        else:
+            return "It's a tie!"
+
+    def final_winner(self):
+        score1 = self.p1_score
+        score2 = self.p2_score
+
         if score1 > score2:
-            return 'Player 1 is winner!'
+            return 'Player 1 wins!!'
         elif score1 < score2:
-            return 'Player 2 is winner!'
+            return 'Player 2 wins!'
         elif score1 == score2:
             return f'It\'s a tie'
 
-    def play_round(self):
+    def play_round(self, round):
         move1 = self.p1.move()
         move2 = self.p2.move()
         print(f"Player 1: {move1}  Player 2: {move2}")
 
         game_result = self.winner(move1, move2)
         self.update_score(game_result)
+        print(self.round_winner(round, game_result), '\n')
         self.p1.learn(move1, move2)
         self.p2.learn(move2, move1)
 
     def play_game(self):
-        print("Game start!")
-        for round in range(3):
+        print("Game start!\n")
+        for round in range(20):
+            self.round = round
             print(f"Round {round}:")
-            self.play_round()
-        print(self.declare_winner(self.p1_score, self.p2_score))
-        print("Game over!")
+            self.play_round(round)
+        print(self.final_winner())
+        print("\nGame over!")
 
 
 if __name__ == '__main__':
