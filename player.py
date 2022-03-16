@@ -4,7 +4,7 @@ in this game"""
 
 class Player:
     def move(self):
-        return 'rocks'
+        return 'rock'
 
     def learn(self, my_move, their_move):
         pass
