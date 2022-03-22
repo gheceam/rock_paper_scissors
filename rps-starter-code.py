@@ -54,11 +54,13 @@ class ReflectPlayer(RandomPlayer):
             return RandomPlayer.move(self)
 
 class CyclePlayer(Player):
+    
     def __init__(self):
         self.moves = []
         self.refresh_moves()
     
     def move(self):
+        
         if len(self.moves) == 1:
             choice = self.get_choice()
             self.refresh_moves()
@@ -70,7 +72,7 @@ class CyclePlayer(Player):
             index = random.randint(0,len(self.moves)-1)
             choice = self.moves.pop(index)
             return choice
-            
+
     def refresh_moves(self):
         self.moves =  copy.deepcopy(Player.moves)
         random.shuffle(self.moves)
