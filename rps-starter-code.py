@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import random
 from os import system
+import copy
 
 """This program plays a game of Rock, Paper, Scissors between two Players,
 and reports both Player's scores each round."""
@@ -12,8 +13,9 @@ in this game"""
 
 class Player:
     moves = ['rock', 'paper', 'scissors']
-    my_move_prior = None
-    their_move_prior = None
+    
+    def __init__(self):
+        self.their_move_prior = None
 
     def validate_play(self, play):
         return play.lower() in Player.moves
@@ -21,9 +23,8 @@ class Player:
     def move(self):
         pass
 
-    def learn(self, my_move, their_move):
-        Player.my_move_prior = my_move
-        Player.their_move_prior = their_move
+    def learn(self, their_move):
+        self.their_move_prior = their_move
 
 
 class HumanPlayer(Player):
@@ -47,11 +48,33 @@ once the 1st round is over it will mimic the opponent's prior move
 """
 class ReflectPlayer(RandomPlayer):
     def move(self):
-        if Player.their_move_prior != None:
-            return Player.their_move_prior
+        if self.their_move_prior != None:
+            return self.their_move_prior
         else:
             return RandomPlayer.move(self)
 
+class CyclePlayer(Player):
+    def __init__(self):
+        self.moves = []
+        self.refresh_moves()
+    
+    def move(self):
+        if len(self.moves) == 1:
+            choice = self.get_choice()
+            self.refresh_moves()
+            return choice
+        else:
+            return self.get_choice()
+    
+    def get_choice(self):
+            index = random.randint(0,len(self.moves)-1)
+            choice = self.moves.pop(index)
+            return choice
+            
+    def refresh_moves(self):
+        self.moves =  copy.deepcopy(Player.moves)
+        random.shuffle(self.moves)
+    
 def beats(one, two):
     return ((one == 'rock' and two == 'scissors') or
             (one == 'scissors' and two == 'paper') or
@@ -110,15 +133,15 @@ class Game:
         game_result = self.winner(move1, move2)
         self.update_score(game_result)
         print(self.round_winner(round, game_result))
-        self.p1.learn(move1, move2)
-        self.p2.learn(move2, move1)
+        self.p1.learn(move2)
+        self.p2.learn(move1)
 
     def play_game(self):
 
         system('clear')
 
         print("Game start!\n")
-        for round in range(5):
+        for round in range(9):
             self.round = round
             print(f"Round {round}:")
             print('-' * 48)
@@ -129,5 +152,5 @@ class Game:
 
 
 if __name__ == '__main__':
-    game = Game(RandomPlayer(), ReflectPlayer())
+    game = Game(HumanPlayer(), CyclePlayer())
     game.play_game()
