@@ -12,6 +12,8 @@ in this game"""
 
 class Player:
     moves = ['rock', 'paper', 'scissors']
+    my_move_prior = None
+    their_move_prior = None
 
     def validate_play(self, play):
         return play.lower() in Player.moves
@@ -20,7 +22,8 @@ class Player:
         pass
 
     def learn(self, my_move, their_move):
-        pass
+        Player.my_move_prior = my_move
+        Player.their_move_prior = their_move
 
 
 class HumanPlayer(Player):
@@ -38,6 +41,16 @@ class RandomPlayer(Player):
     def move(self):
         return random.choice(Player.moves)
 
+"""
+ReflectPlayer will play the first round like RandomPlayer,
+once the 1st round is over it will mimic the opponent's prior move
+"""
+class ReflectPlayer(RandomPlayer):
+    def move(self):
+        if Player.their_move_prior != None:
+            return Player.their_move_prior
+        else:
+            return RandomPlayer.move(self)
 
 def beats(one, two):
     return ((one == 'rock' and two == 'scissors') or
@@ -116,5 +129,5 @@ class Game:
 
 
 if __name__ == '__main__':
-    game = Game(HumanPlayer(), RandomPlayer())
+    game = Game(RandomPlayer(), ReflectPlayer())
     game.play_game()
