@@ -26,6 +26,12 @@ class Player:
         self.their_move_prior = their_move
 
 
+class RockPlayer(Player):
+
+    def move(self):
+        return 'rock'
+
+
 class HumanPlayer(Player):
 
     def move(self):
@@ -132,6 +138,13 @@ class Game:
         self.p1.learn(move2)
         self.p2.learn(move1)
 
+    def play_multiple_rounds(self, num_rounds):
+        for round in range(num_rounds):
+            self.round = round
+            print(f"Round {round+1}:")
+            print('-' * 48)
+            self.play_round(round)
+
     def beats(self, one, two):
         return ((one == 'rock' and two == 'scissors') or
                 (one == 'scissors' and two == 'paper') or
@@ -142,16 +155,14 @@ class Game:
         num_rounds = int(input("How many rounds will be played?: "))
         system('clear')
         print("Start Game!\n")
-        for round in range(num_rounds):
-            self.round = round
-            print(f"Round {round+1}:")
-            print('-' * 48)
-            self.play_round(round)
-
+        if num_rounds == 1:
+            self.play_round(num_rounds)
+        elif num_rounds > 1:
+            self.play_multiple_rounds(num_rounds)
         print(self.final_winner())
         print("\n!!!GAME OVER!!!\n")
 
 
 if __name__ == '__main__':
-    game = Game(RandomPlayer(), RandomPlayer())
+    game = Game(RandomPlayer(), RockPlayer())
     game.play_game()
