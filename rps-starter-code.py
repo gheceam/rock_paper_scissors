@@ -114,16 +114,18 @@ class Game:
         elif result == 'player2':
             return f"Player 2 wins round!{separator_newline}".upper()
         else:
-            return f"It's a tie!{separator_newline}".upper()
+            return f"Round is a tie!{separator_newline}".upper()
 
     def final_winner(self):
         score1 = self.p1_score
         score2 = self.p2_score
-
+        print('The final score is:')
+        print(f'PLAYER 1 with: {score1}')
+        print(f'PLAYER 2 with: {score2}\n')
         if score1 > score2:
-            return 'Player 1 wins!!'
+            return f'PLAYER 1 Wins!!'
         elif score1 < score2:
-            return 'Player 2 wins!'
+            return 'PLAYER 2 Wins!!'
         elif score1 == score2:
             return f'It\'s a tie'
 
@@ -141,9 +143,9 @@ class Game:
     def play_game(self):
 
         system('clear')
-
+        num_rounds = int(input("How many rounds will be played?: "))
         print("Game start!\n")
-        for round in range(9):
+        for round in range(num_rounds):
             self.round = round
             print(f"Round {round}:")
             print('-' * 48)
@@ -154,5 +156,5 @@ class Game:
 
 
 if __name__ == '__main__':
-    game = Game(HumanPlayer(), CyclePlayer())
+    game = Game(RandomPlayer(), RandomPlayer())
     game.play_game()
