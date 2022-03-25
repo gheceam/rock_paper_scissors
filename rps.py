@@ -1,6 +1,7 @@
 from os import system
 import random
 import copy
+from colorama import Fore, Back
 
 """This program plays a game of Rock, Paper, Scissors between two Players,
 and reports both Player's scores each round."""
@@ -12,6 +13,8 @@ in this game"""
 
 class Player:
     moves = ['rock', 'paper', 'scissors']
+    P1_TITLE = "Player One"
+    P2_TITLE = "Player Two"
 
     def __init__(self):
         self.their_move_prior = None
@@ -40,7 +43,7 @@ class HumanPlayer(Player):
             return play
         else:
             print("Please make a valid play....\n")
-            self.move()
+            return self.move()
 
 
 class RandomPlayer(Player):
@@ -60,25 +63,14 @@ class ReflectPlayer(RandomPlayer):
 
 class CyclePlayer(Player):
     def __init__(self):
-        self.moves = []
-        self.refresh_moves()
+        self.moves_index = 0
 
     def move(self):
-        if len(self.moves) == 1:
-            choice = self.get_choice()
-            self.refresh_moves()
-            return choice
-        else:
-            return self.get_choice()
-
-    def get_choice(self):
-        index = random.randint(0, len(self.moves)-1)
-        choice = self.moves.pop(index)
-        return choice
-
-    def refresh_moves(self):
-        self.moves = copy.deepcopy(Player.moves)
-        random.shuffle(self.moves)
+        result = Player.moves[self.moves_index % 3]
+        if self.moves_index > 2:
+            self.moves_index = 0
+        self.moves_index += 1
+        return result
 
 
 class Game:
@@ -93,9 +85,9 @@ class Game:
         if move1 == move2:
             return 'tie'
         if self.beats(move1, move2):
-            return 'player1'
+            return f'player1'
         else:
-            return 'player2'
+            return f'player2'
 
     def update_score(self, result):
         if result == 'player1':
@@ -104,44 +96,52 @@ class Game:
             self.p2_score += 1
 
     def round_winner(self, round, result):
-        separator = "=" * 50
-        separator_newline = '\n' + separator + '\n'
-        print(separator)
+        sep = "=" * 50
+        sep_nl = '\n' + sep + '\n'
+        print(sep, Fore.YELLOW)
+        # print(Fore.YELLOW)
         if result == 'player1':
-            return f"Player 1 wins round!{separator_newline}".upper()
+            return f"{Player.P1_TITLE} wins round!{Fore.WHITE}{sep_nl}"
         elif result == 'player2':
-            return f"Player 2 wins round!{separator_newline}".upper()
+            return f"{Player.P2_TITLE} wins round!{Fore.WHITE}{sep_nl}"
         else:
-            return f"Round is a tie!{separator_newline}".upper()
+            return f"Round is a tie!{Fore.WHITE}{sep_nl}"
 
     def final_winner(self):
         score1 = self.p1_score
         score2 = self.p2_score
-        print('The final score is:')
-        print(f'PLAYER 1 with: {score1}')
-        print(f'PLAYER 2 with: {score2}\n')
+        print(f"Final Score\n{'-' * 20}")
+        print(f'{Player.P1_TITLE}: {Fore.BLUE}{score1}{Fore.RESET}')
+        print(f'{Player.P2_TITLE}: {Fore.BLUE}{score2}{Fore.RESET}\n')
+        print(Fore.GREEN)
         if score1 > score2:
-            return f'PLAYER 1 Wins!!'
+            return f'{Player.P1_TITLE} Wins Game!!{Fore.RESET}'
         elif score1 < score2:
-            return 'PLAYER 2 Wins!!'
+            return f'{Player.P2_TITLE} Wins Game!!{Fore.RESET}'
         elif score1 == score2:
-            return f'It\'s a tie'
+            return f'Game is a Tie'
 
     def play_round(self, round):
         move1 = self.p1.move()
         move2 = self.p2.move()
-        print(f"Player 1: {move1}  Player 2: {move2}")
-
+        fb = Fore.BLUE
+        print(f"{Player.P1_TITLE} played: {fb}{move1}",
+              f"\n{Fore.WHITE}{Player.P2_TITLE} played: {fb}{move2}",
+              f"{Fore.WHITE}")
+        print('-' * 48)
         game_result = self.winner(move1, move2)
         self.update_score(game_result)
-        print(self.round_winner(round, game_result))
+        print(f"{Player.P1_TITLE} score: {fb}{self.p1_score}",
+              f"\n{Fore.WHITE}{Player.P2_TITLE} score: {fb}{self.p2_score}",
+              f"{Fore.WHITE}")
+        print(f"{self.round_winner(round, game_result)}")
         self.p1.learn(move2)
         self.p2.learn(move1)
 
     def play_multiple_rounds(self, num_rounds):
         for round in range(num_rounds):
             self.round = round
-            print(f"Round {round+1}:")
+            print(f"{Fore.MAGENTA}Round {round+1}{Fore.RESET}")
             print('-' * 48)
             self.play_round(round)
 
@@ -152,15 +152,21 @@ class Game:
 
     def play_game(self):
         system('clear')
-        num_rounds = int(input("How many rounds will be played?: "))
-        system('clear')
-        print("Start Game!\n")
-        if num_rounds == 1:
-            self.play_round(num_rounds)
-        elif num_rounds > 1:
-            self.play_multiple_rounds(num_rounds)
-        print(self.final_winner())
-        print("\n!!!GAME OVER!!!\n")
+        num_rounds = input("How many rounds will be played?: ")
+        if num_rounds.isnumeric():
+            num_rounds = int(num_rounds)
+            system('clear')
+            print(f"\n{Fore.GREEN}{Back.WHITE}START GAME",
+                  f"\n{Fore.WHITE}{Back.RESET}")
+            if num_rounds == 1:
+                self.play_round(num_rounds)
+            elif num_rounds > 1:
+                self.play_multiple_rounds(num_rounds)
+            print(self.final_winner())
+            print(f"\n{Fore.RED}{Back.WHITE}GAME OVER",
+                  f"{Fore.RESET}{Back.RESET}\n")
+        else:
+            self.play_game()
 
 
 if __name__ == '__main__':
