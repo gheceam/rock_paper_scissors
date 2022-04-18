@@ -1,5 +1,6 @@
 # rock_paper_scissors
 
+### Rock Paper Scissors Game
 A rock paper scissors game with a retro terminal feel.
 
 Options are to play as:
