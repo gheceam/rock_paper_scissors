@@ -170,5 +170,5 @@ class Game:
 
 
 if __name__ == '__main__':
-    game = Game(RandomPlayer(), RockPlayer())
+    game = Game(HumanPlayer(), RandomPlayer())
     game.play_game()
