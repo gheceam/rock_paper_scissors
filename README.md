@@ -1,5 +1,3 @@
-# rock_paper_scissors
-
 ### Rock Paper Scissors Game
 A rock paper scissors game with a retro terminal feel.
 You can play as a human player against the computer,
