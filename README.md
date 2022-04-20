@@ -9,7 +9,7 @@ Options are to play as:
 - Human Player (User controls moves) - `HumanPlayer()`
 - Random Player (Computer picks the move) - `RandomPlayer()`
 - Rock Player (Computer always plays rock) - `RockPlayer()`
-- Cycle Player (Computer plays rock, paper, scisscors in sequence) - `CyclePlayer()`
+- Cycle Player (Computer plays rock, paper, scissors in sequence) - `CyclePlayer()`
 - Reflect Player (Computer will play the prior move the opponent played) - `ReflectPlayer()`
 
 #### Changing Player Style
